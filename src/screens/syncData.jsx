@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, Text, View, TouchableOpacity, SafeAreaView } from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity, SafeAreaView, ActivityIndicator } from 'react-native';
 import { useState } from 'react';
 
 import useBLE from "../ble/useBLE";
@@ -30,13 +30,11 @@ const SyncDataScreen = () => {
             await AsyncStorage.setItem("Activities", JSON.stringify([]));
             console.log("Activities Initialized");
         }
-        else {
-          const parsedActivities = JSON.parse(activities);
-          parsedActivities.push(newActivity);
-          await AsyncStorage.setItem("Activities", JSON.stringify(parsedActivities)).then(() => {
-              console.log("Activity Stored");
-          });
-        }
+        const parsedActivities = JSON.parse(activities);
+        parsedActivities.push(newActivity);
+        await AsyncStorage.setItem("Activities", JSON.stringify(parsedActivities)).then(() => {
+            console.log("Activity Stored");
+        });
       } catch (error) {
         console.log(error);
       }
@@ -78,9 +76,11 @@ const SyncDataScreen = () => {
             <View style={styles.heartRateTitleWrapper}>
                 {connectedDevice ? (
                 <>
-                    <Text>{dataArray}</Text>
+                    {/* <Text>{dataArray}</Text>
                     <Text style={styles.heartRateTitleText}>Your Heart Rate Is:</Text>
-                    <Text style={styles.heartRateText}>{heartRate} bpm</Text>
+                    <Text style={styles.heartRateText}>{heartRate} bpm</Text> */}
+                    <ActivityIndicator size="large" color="black" />
+                    <Text style={styles.heartRateTitleText}>Syncing...</Text>
                 </>
                 ) : (
                 <Text style={styles.heartRateTitleText}>
