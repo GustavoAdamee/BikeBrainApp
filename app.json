@@ -43,6 +43,11 @@
         "android.permission.BLUETOOTH_ADMIN",
         "android.permission.BLUETOOTH_CONNECT"
       ],
+      "config": {
+        "googleMaps": {
+          "apiKey": "AIzaSyBktIn1m1MT5Xa5xGP91k_d5RZxqIlmH1o"
+        }
+      },
       "package": "com.gustavo_adame.expoblesample"
     },
     "web": {

@@ -1,5 +1,5 @@
 import { View, Text } from "react-native";
-import MapView, {Polyline} from "react-native-maps";
+import MapView, {Polyline, PROVIDER_GOOGLE} from "react-native-maps";
 import { useEffect, useState } from "react";
 
 // Data for the activity cards (FOR TESTING)
@@ -149,7 +149,7 @@ const ActivityScreen = ({navigation, route}) => {
                 }}
             >
                 {/* NOT ON USE NOW BECAUSE OF API KEY MISSING */}
-                {/* <MapView
+                <MapView
                     style={{
                         flex: 0.7,
                     }}
@@ -159,13 +159,14 @@ const ActivityScreen = ({navigation, route}) => {
                         latitudeDelta: 0.0922,
                         longitudeDelta: 0.0421,
                     }}
+                    provider={PROVIDER_GOOGLE}
                 >
                     <Polyline
                         coordinates={routeCoordinates}
                         strokeColor="#000" // fallback color
                         strokeWidth={4}
                     />
-                </MapView> */}
+                </MapView>
                 <View
                     style={{
                         flex: 0.05,
