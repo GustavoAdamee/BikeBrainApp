@@ -9,13 +9,10 @@ import SyncDataScreen from './src/screens/syncData';
 
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
-import AsyncStorage from '@react-native-async-storage/async-storage';
-
-
 const Tab = createBottomTabNavigator();
 
 const App = () => {
-  
+
   useEffect(() => {
     console.log("APP Mount");
   }
@@ -56,9 +53,6 @@ const App = () => {
           tabBarInactiveTintColor: 'gray',
         })}
       >
-        {/* <Tab.Screen name="Sync Data">
-          {(props) => <SyncDataScreen {...props} updateActivities={updateActivities} />}
-        </Tab.Screen> */}
         <Tab.Screen name="Sync Data" component={SyncDataScreen} />
         <Tab.Screen 
           name="Home" 
