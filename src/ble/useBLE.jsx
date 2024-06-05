@@ -9,15 +9,20 @@ import * as ExpoDevice from "expo-device";
 
 import base64 from "react-native-base64";
 
-const DEVICE_SERVICE_UUID = "0000180d-0000-1000-8000-00805f9b34fb";               //Need the Raspberry Pi UUID
-const DEVICE_SERVICE_CHARACTERISTIC = "00002a37-0000-1000-8000-00805f9b34fb";     //Need the Raspberry Pi Characteristic
+// const DEVICE_SERVICE_UUID = "0000180d-0000-1000-8000-00805f9b34fb";           //Heart Rate Service UUID
+const DEVICE_SERVICE_UUID = "6e400001-b5a3-f393-e0a9-e50e24dcca9e"
+
+// const DEVICE_SERVICE_CHARACTERISTIC = "00002a37-0000-1000-8000-00805f9b34fb"; //Heart Rate Measurement Characteristic UUID
+const DEVICE_SERVICE_CHARACTERISTIC = "6e400003-b5a3-f393-e0a9-e50e24dcca9e"
 
 function useBLE() {
   const bleManager = useMemo(() => new BleManager(), []);
   const [device, setDevice] = useState();
   const [connectedDevice, setConnectedDevice] = useState(null);
-  const [heartRate, setHeartRate] = useState(0);
+  // const [heartRate, setHeartRate] = useState(0);
+  const [actualActivityString, setActualActivityString] = useState("");
   const [dataArray, setDataArray] = useState([]);
+  const [isSyncingFinished, setIsSyncingFinished] = useState(false);
   
   // Request permissions for Android 31
   const requestAndroid31Permissions = async () => {
@@ -102,7 +107,7 @@ function useBLE() {
         // console.log("Error scanning for devices");
         // console.log(error);
       }
-      if (device && device.name?.includes("Heart Rate")) {                                   //(device && device.name?.includes("{Raspberry Pi device name}"))
+      if (device && device.name?.includes("mpy-uart")) {                                   //(device && device.name?.includes("{Raspberry Pi device name}"))
         // setDevice((prevState) => {
         //   if (isDuplicteDevice(prevState, device) === false) {
         //     // console.log("Device found");
@@ -119,10 +124,12 @@ function useBLE() {
   const connectToDevice = async (device) => {
     try {
       bleManager.stopDeviceScan();
-      const deviceConnection = await bleManager.connectToDevice(device.id);
+      const deviceConnection = await bleManager.connectToDevice(
+        device.id
+      );
       console.log("conn->",deviceConnection);
       setConnectedDevice(deviceConnection);
-      console.log("connected->",setConnectedDevice)
+      // console.log("connected->",setConnectedDevice)
       // await deviceConnection.discoverAllServicesAndCharacteristics();
       await bleManager.discoverAllServicesAndCharacteristicsForDevice(device.id);
       const services = await device.services()
@@ -136,10 +143,11 @@ function useBLE() {
 
   // Disconnect from a device
   const disconnectFromDevice = () => {
+    console.log("Disconnecting from Device");
     if (connectedDevice) {
       bleManager.cancelDeviceConnection(connectedDevice.id);
       setConnectedDevice(null);
-      setHeartRate(0);
+      setIsSyncingFinished(false);
     }
   };
 
@@ -150,35 +158,84 @@ function useBLE() {
     characteristic
   ) => {
     if (error) {
-      // console.log(error);
+      console.log(error);
       return -1;
     } else if (!characteristic?.value) {
       console.log("No Data was received");
       return -1;
     }
-    const rawData = base64.decode(characteristic.value);
-    let innerHeartRate = -1;
 
-    const firstBitValue = Number(rawData) & 0x01;
+    const decodedData = base64.decode(characteristic.value);
 
-    if (firstBitValue === 0) {
-      innerHeartRate = rawData[1].charCodeAt(0);
-    } else {
-      innerHeartRate =
-        Number(rawData[1].charCodeAt(0) << 8) +
-        Number(rawData[2].charCodeAt(2));
+    if (!decodedData.includes("$") && !decodedData.includes("*")){
+      const stringPackage = actualActivityString;
+      // stringPackage.push(decodedData);
+      stringPackage.concat(decodedData);
+      setActualActivityString(stringPackage);
+      console.log(actualActivityString);
+    }
+    // Finished Syncing actual activity and there is more activity to sync
+    if (decodedData.includes("$") && !decodedData.includes("*")){
+      const stringPackage = actualActivityString;
+      // stringPackage.push(decodedData);
+      stringPackage.concat(decodedData);
+      stringPackage.replace("$", "");
+      setActualActivityString(stringPackage);
+      console.log(actualActivityString);
+      console.log("Finished Syncing activity, there is more to sync");
+      // storing the actual activity string in the dataArray
+      const auxArray = dataArray;
+      auxArray.push(actualActivityString);
+      setDataArray(auxArray);
+      console.log(dataArray);
+      clearactualActivityString();
+    }
+    // Finished Syncing actual activity and there is no more activity to sync
+    if (decodedData.includes("$") && decodedData.includes("*")){
+      const stringPackage = actualActivityString;
+      // stringPackage.push(decodedData);
+      stringPackage.concat(decodedData);
+      stringPackage.replace("$", "");
+      stringPackage.replace("*", "");
+      setActualActivityString(stringPackage);
+      console.log(actualActivityString);
+      console.log("Finished Syncing activity, there is no more to sync");
+      // storing the actual activity string in the dataArray
+      const auxArray = dataArray;
+      auxArray.push(actualActivityString);
+      setDataArray(auxArray);
+      console.log(dataArray);
+      clearactualActivityString();
+      setIsSyncingFinished(true);
     }
 
-    setHeartRate(innerHeartRate);
+    // let innerHeartRate = -1;
+
+    // const firstBitValue = Number(rawData) & 0x01;
+
+    // if (firstBitValue === 0) {
+    //   innerHeartRate = rawData[1].charCodeAt(0);
+    // } else {
+    //   innerHeartRate =
+    //     Number(rawData[1].charCodeAt(0) << 8) +
+    //     Number(rawData[2].charCodeAt(2));
+    // }
+
+    // setHeartRate(innerHeartRate);
     
     // Testing the data array for the future data
     // heartRate = 60 is acting as a disconnect signal
-    if (innerHeartRate !== 60) {
-      const aux = dataArray;
-      aux.push(innerHeartRate);
-      setDataArray(aux);
-      console.log(dataArray);
-    }
+    // if (innerHeartRate !== 60) {
+    //   const aux = actualActivityString;
+    //   aux.push(innerHeartRate);
+    //   setActualActivityString(aux);
+    //   console.log(actualActivityString);
+    // }
+  };
+
+  // Clear the actual activity string
+  const clearactualActivityString = () => {
+    setActualActivityString("");
   };
 
   // Clear the data array
@@ -188,6 +245,7 @@ function useBLE() {
 
   const startStreamingData = async (device) => {
     if (device) {
+      console.log("Device Connected")
       device.monitorCharacteristicForService(
         DEVICE_SERVICE_UUID,
         DEVICE_SERVICE_CHARACTERISTIC,
@@ -204,11 +262,11 @@ function useBLE() {
     requestPermissions,
     connectToDevice,
     device,
-    dataArray,
     connectedDevice,
     disconnectFromDevice,
+    dataArray,
     clearDataArray,
-    heartRate,
+    isSyncingFinished,
   };
 
 }

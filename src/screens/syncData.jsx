@@ -11,19 +11,19 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 const SyncDataScreen = () => {
 
     const {
-        scanForPeripherals,
-        requestPermissions,
-        connectToDevice,
-        device,
-        dataArray,
-        connectedDevice,
-        disconnectFromDevice,
-        clearDataArray,
-        heartRate,
+      scanForPeripherals,
+      requestPermissions,
+      connectToDevice,
+      device,
+      connectedDevice,
+      disconnectFromDevice,
+      dataArray,
+      clearDataArray,
+      isSyncingFinished,
     } = useBLE();
 
-    const storeNewActivity = async (newActivity) => {
-      console.log("Storing New Activity");
+    const storeNewActivity = async (newActivitiesArray) => {
+      console.log("Storing New Activities");
       try{
         const activities = await AsyncStorage.getItem("Activities");
         if (!activities) {
@@ -31,7 +31,10 @@ const SyncDataScreen = () => {
             console.log("Activities Initialized");
         }
         const parsedActivities = JSON.parse(activities);
-        parsedActivities.push(newActivity);
+        // push every new activity to the parsedActivities array
+        for (const newActivity of newActivitiesArray) {
+          parsedActivities.push(newActivity);
+        }
         await AsyncStorage.setItem("Activities", JSON.stringify(parsedActivities)).then(() => {
             console.log("Activity Stored");
         });
@@ -40,16 +43,16 @@ const SyncDataScreen = () => {
       }
     };
 
-
-    if (heartRate === 60) {
+    if (isSyncingFinished === true) {
         storeNewActivity(dataArray);
         clearDataArray();
         console.log("Disconnecting from Device");
         disconnectFromDevice();
-      }
-      else {
-        // console.log("Heart Rate: " + heartRate);
-      }
+    }
+    else {
+      console.log("Syncing in Progress...");
+      // console.log("Heart Rate: " + heartRate);
+    }
 
     const [isModalVisible, setIsModalVisible] = useState(false);
 
