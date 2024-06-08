@@ -29,7 +29,7 @@ const ActivityCard = ({ navigation, activity }) => {
                     {activity.startTime}
                 </Text>
                 <Text>
-                    {activity.date}
+                    {activity.startDate}
                 </Text>
                 <Text>
                     {activity.endTime}
@@ -57,7 +57,7 @@ const ActivityCard = ({ navigation, activity }) => {
                         }}
                     >
                         <Text>Time Elapsed:</Text>
-                        <Text style={{fontSize:16, fontWeight: "bold"}}>{activity.timeElapsed}</Text>
+                        <Text style={{fontSize:16, fontWeight: "bold"}}>{activity.elapsedTime}</Text>
                     </View>
                     {/* TOP RIGHT */}
                     <View
@@ -67,7 +67,7 @@ const ActivityCard = ({ navigation, activity }) => {
                         }}
                     >
                         <Text>Average Speed:</Text>
-                        <Text style={{fontSize:16, fontWeight: "bold"}}>{activity.averageSpeed} Km/h</Text>
+                        <Text style={{fontSize:16, fontWeight: "bold"}}>{activity.avgSpeed}</Text>
                     </View>
                 </View>
                 
@@ -99,7 +99,7 @@ const ActivityCard = ({ navigation, activity }) => {
                         }}
                     >
                         <Text>Distance:</Text>
-                        <Text style={{fontSize:16, fontWeight: "bold"}}>{activity.distance} Km</Text>
+                        <Text style={{fontSize:16, fontWeight: "bold"}}>{activity.distance}</Text>
                     </View>
                 </View>
             </View>
