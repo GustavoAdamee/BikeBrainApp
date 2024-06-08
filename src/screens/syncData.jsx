@@ -43,8 +43,46 @@ const SyncDataScreen = () => {
       }
     };
 
+    const calculateAvgSpeed = (distance, timeString) => {
+      const timeArray = timeString.split(":");
+      const time = (Number(timeArray[0]) * 3600) + (Number(timeArray[1]) * 60) + Number(timeArray[2]);
+      const speed = distance / time;
+      return String(speed) + " Km/h";
+    }
+
+    const prepareDataArray = (data) => {
+      const activitiesArray = [];
+      for (const activity of data){
+        const activityString = activity.split("\n");
+        const activityObject = {
+          "startDate": activityString[0],
+          "startTime": activityString[1],
+          "endDate": activityString[2],
+          "endTime": activityString[3],
+          "elapsedTime": activityString[4],
+          "distance": (Number(activityString[5]) / 1000) + " Km",
+          "maxSpeed": activityString[6] + " Km/h",
+          "avgSpeed": calculateAvgSpeed((Number(activityString[5]) / 1000), activityString[4]),
+          "calories": activityString[7],
+          "coordinates": []
+        };
+        for (let i = 8; i < activityString.length; i += 2){
+          const lat = Number(activityString[i].split(",")[0]);
+          const lon = Number(activityString[i].split(",")[1]);
+          activityObject.coordinates.push({
+            "latitude": lat,
+            "longitude": lon
+          });
+        }
+        activitiesArray.push(activityObject);
+        console.log(activityObject);
+      }
+      return activitiesArray;
+    }
+
     if (isSyncingFinished === true) {
-        storeNewActivity(dataArray);
+        const processedActivitiesArray = prepareDataArray(dataArray);
+        storeNewActivity(processedActivitiesArray);
         clearDataArray();
         console.log("Disconnecting from Device");
         disconnectFromDevice();
