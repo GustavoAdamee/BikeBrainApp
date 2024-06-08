@@ -45,7 +45,7 @@ const SyncDataScreen = () => {
 
     const calculateAvgSpeed = (distance, timeString) => {
       const timeArray = timeString.split(":");
-      const time = (Number(timeArray[0]) * 3600) + (Number(timeArray[1]) * 60) + Number(timeArray[2]);
+      const time = (Number(timeArray[2]) * 3600) + (Number(timeArray[1]) * 60) + Number(timeArray[0]);
       const speed = distance / time;
       return String(speed) + " Km/h";
     }
