@@ -33,6 +33,8 @@ const SyncDataScreen = () => {
         const parsedActivities = JSON.parse(activities);
         // push every new activity to the parsedActivities array
         for (const newActivity of newActivitiesArray) {
+          // inserd id to the new activity based on the length of the parsedActivities array
+          newActivity.id = parsedActivities.length;
           parsedActivities.push(newActivity);
         }
         await AsyncStorage.setItem("Activities", JSON.stringify(parsedActivities)).then(() => {
@@ -55,6 +57,7 @@ const SyncDataScreen = () => {
       for (const activity of data){
         const activityString = activity.split("\n");
         const activityObject = {
+          "id": -1,
           "startDate": activityString[0],
           "startTime": activityString[1],
           "endDate": activityString[2],
