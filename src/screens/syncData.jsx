@@ -66,7 +66,7 @@ const SyncDataScreen = () => {
           "calories": activityString[7],
           "coordinates": []
         };
-        for (let i = 8; i < activityString.length; i += 2){
+        for (let i = 8; i < activityString.length; i += 1){
           const lat = Number(activityString[i].split(",")[0]);
           const lon = Number(activityString[i].split(",")[1]);
           activityObject.coordinates.push({
