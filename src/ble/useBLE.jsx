@@ -20,7 +20,8 @@ function useBLE() {
   const [device, setDevice] = useState();
   const [connectedDevice, setConnectedDevice] = useState(null);
   // const [heartRate, setHeartRate] = useState(0);
-  const [actualActivityString, setActualActivityString] = useState("");
+  // const [actualActivityString, setActualActivityString] = useState("");
+  let actualActivityString = "";
   const [dataArray, setDataArray] = useState([]);
   const [isSyncingFinished, setIsSyncingFinished] = useState(false);
   
@@ -166,21 +167,30 @@ function useBLE() {
     }
 
     const decodedData = base64.decode(characteristic.value);
+    console.log(decodedData)
 
     if (!decodedData.includes("$") && !decodedData.includes("*")){
-      const stringPackage = actualActivityString;
+      console.log("if 1")
+      // const stringPackage = actualActivityString;
       // stringPackage.push(decodedData);
-      stringPackage.concat(decodedData);
-      setActualActivityString(stringPackage);
+      // stringPackage.concat(decodedData);
+      // setActualActivityString(stringPackage.concat(decodedData));
+      // console.log(actualActivityString);
       console.log(actualActivityString);
+      actualActivityString = actualActivityString.concat('', decodedData);
+      console.log(actualActivityString);
+      // setActualActivityString('test');
+      // console.log(actualActivityString);
     }
     // Finished Syncing actual activity and there is more activity to sync
     if (decodedData.includes("$") && !decodedData.includes("*")){
-      const stringPackage = actualActivityString;
+      console.log("if 2")
+      // const stringPackage = actualActivityString;
       // stringPackage.push(decodedData);
-      stringPackage.concat(decodedData);
-      stringPackage.replace("$", "");
-      setActualActivityString(stringPackage);
+      actualActivityString = actualActivityString.concat('', decodedData);
+      // stringPackage.concat(decodedData);
+      actualActivityString = actualActivityString.replace("$", "");
+      // setActualActivityString(stringPackage);
       console.log(actualActivityString);
       console.log("Finished Syncing activity, there is more to sync");
       // storing the actual activity string in the dataArray
@@ -191,19 +201,20 @@ function useBLE() {
       clearactualActivityString();
     }
     // Finished Syncing actual activity and there is no more activity to sync
-    if (decodedData.includes("$") && decodedData.includes("*")){
-      const stringPackage = actualActivityString;
+    if (decodedData == "*"){
+      console.log("if 3")
+      // const stringPackage = actualActivityString;
       // stringPackage.push(decodedData);
-      stringPackage.concat(decodedData);
-      stringPackage.replace("$", "");
-      stringPackage.replace("*", "");
-      setActualActivityString(stringPackage);
+      // stringPackage.concat(decodedData);
+      // stringPackage.replace("$", "");
+      // stringPackage.replace("*", "");
+      // setActualActivityString(stringPackage);
       console.log(actualActivityString);
       console.log("Finished Syncing activity, there is no more to sync");
       // storing the actual activity string in the dataArray
-      const auxArray = dataArray;
-      auxArray.push(actualActivityString);
-      setDataArray(auxArray);
+      // const auxArray = dataArray;
+      // auxArray.push(actualActivityString);
+      // setDataArray(auxArray);
       console.log(dataArray);
       clearactualActivityString();
       setIsSyncingFinished(true);
@@ -235,7 +246,7 @@ function useBLE() {
 
   // Clear the actual activity string
   const clearactualActivityString = () => {
-    setActualActivityString("");
+    actualActivityString = "";
   };
 
   // Clear the data array
