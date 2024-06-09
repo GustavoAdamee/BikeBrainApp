@@ -124,7 +124,7 @@ const ActivityCard = ({ navigation, activity }) => {
                         backgroundColor: 'black',
                         flex: 0.3,
                     }}
-                    onPress={() => navigation.navigate('Activity', {activityId: activity.id})}
+                    onPress={() => navigation.navigate('Activity', {activity: activity})}
                 >
                     <Text
                         style={{

@@ -6,23 +6,23 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const ActivityScreen = ({navigation, route}) => {
     
-    const [activity, setActivity] = useState({
-        "startDate": "",
-        "startTime": "",
-        "endDate": "",
-        "endTime": "",
-        "elapsedTime": "",
-        "distance": "",
-        "maxSpeed": "",
-        "avgSpeed": "",
-        "calories": "",
-        "coordinates": [
-            {
-                "latitude": 0,
-                "longitude": 0
-            }
-        ]
-    });
+    // const [activity, setActivity] = useState({
+    //     "startDate": "",
+    //     "startTime": "",
+    //     "endDate": "",
+    //     "endTime": "",
+    //     "elapsedTime": "",
+    //     "distance": "",
+    //     "maxSpeed": "",
+    //     "avgSpeed": "",
+    //     "calories": "",
+    //     "coordinates": [
+    //         {
+    //             "latitude": 0,
+    //             "longitude": 0
+    //         }
+    //     ]
+    // });
 
     if (!route.params) {
         return (
@@ -39,23 +39,23 @@ const ActivityScreen = ({navigation, route}) => {
     }
     console.log(route.params)
 
-    const {activityId} = route.params;
-    const fetchActivity = async () => {
-        // this could be optimized by fetcing directly the activity instead of all activities
-        const activities = await AsyncStorage.getItem('Activities');
-        console.log(activities);
-        const parsedActivities = JSON.parse(activities);
-        const activity = parsedActivities.find(activity => activity.id === activityId);
-        setActivity(activity);
-    }
+    const {activity} = route.params;
+    // const fetchActivity = async () => {
+    //     // this could be optimized by fetcing directly the activity instead of all activities
+    //     const activities = await AsyncStorage.getItem('Activities');
+    //     console.log(activities);
+    //     const parsedActivities = JSON.parse(activities);
+    //     const activity = parsedActivities.find(activity => activity.id === activityId);
+    //     setActivity(activity);
+    // }
 
-    const [routeCoordinates, setRouteCoordinates] = useState([]);
+    // const [routeCoordinates, setRouteCoordinates] = useState([]);
 
-    // Fetch route coordinates (example)
-    useEffect(() => {
-        fetchActivity();
-        setRouteCoordinates(activity.coordinates);
-    }, []);
+    // // Fetch route coordinates (example)
+    // useEffect(() => {
+    //     fetchActivity();
+    //     setRouteCoordinates(activity.coordinates);
+    // }, []);
 
     // All the code above is for testing purposes only and should be replaced with actual data fetching logic
 
@@ -80,7 +80,7 @@ const ActivityScreen = ({navigation, route}) => {
                     }}
                 >
                     <Polyline
-                        coordinates={routeCoordinates}
+                        coordinates={activity.coordinates}
                         strokeColor="#000" // fallback color
                         strokeWidth={4}
                     />
