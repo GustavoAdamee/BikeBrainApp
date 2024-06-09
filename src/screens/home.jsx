@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 
-import { FlatList } from "react-native";
+import { FlatList, Pressable } from "react-native";
 import Status from "../components/status";
 import ActivityCard from "../components/activityCard";
 
@@ -52,7 +52,29 @@ const HomeScreen = ({navigation}) => {
     return (
         <>
             <Status />
-
+            {/* FOR DEBUGGING */}
+            <Pressable
+                style={{
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    height: 25,
+                    borderRadius: 4,
+                    backgroundColor: 'black',
+                    flex: 0.3,
+                }}
+                // Clear activities on the storage
+                onPress={() => AsyncStorage.setItem("Activities", JSON.stringify([]))}
+            >
+                <Text
+                    style={{
+                        color: 'white',
+                        fontWeight: 'bold',
+                        fontSize: 16,
+                    }}
+                >
+                    View
+                </Text>
+            </Pressable>
             <FlatList
                 data={activities}
                 renderItem={({ item }) => (
