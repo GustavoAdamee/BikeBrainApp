@@ -40,7 +40,6 @@ const ActivityScreen = ({navigation, route}) => {
     console.log(route.params)
 
     const {activityId} = route.params;
-    // const activity = activitiesData.find(activity => activity.id === activityId);
     const fetchActivity = async () => {
         // this could be optimized by fetcing directly the activity instead of all activities
         const activities = await AsyncStorage.getItem('activities');
@@ -70,12 +69,6 @@ const ActivityScreen = ({navigation, route}) => {
                 <MapView
                     style={{
                         flex: 0.7,
-                    }}
-                    initialRegion={{
-                        latitude: 40.7128,
-                        longitude: -74.0060,
-                        latitudeDelta: 0.0922,
-                        longitudeDelta: 0.0421,
                     }}
                     provider={PROVIDER_GOOGLE}
                 >
