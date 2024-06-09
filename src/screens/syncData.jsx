@@ -48,7 +48,8 @@ const SyncDataScreen = () => {
     const calculateAvgSpeed = (distance, timeString) => {
       const timeArray = timeString.split(":");
       const time = (Number(timeArray[2]) * 3600) + (Number(timeArray[1]) * 60) + Number(timeArray[0]);
-      const speed = distance / time;
+      const speedMetersPerSecond = Number(distance) / time;
+      const speed = Math.round(speedMetersPerSecond * 3.6 * 100) / 100;
       return String(speed) + " Km/h";
     }
 
@@ -65,7 +66,7 @@ const SyncDataScreen = () => {
           "elapsedTime": activityString[4],
           "distance": (Number(activityString[5]) / 1000) + " Km",
           "maxSpeed": activityString[6] + " Km/h",
-          "avgSpeed": calculateAvgSpeed((Number(activityString[5]) / 1000), activityString[4]),
+          "avgSpeed": calculateAvgSpeed(activityString[5], activityString[4]),
           "calories": activityString[7],
           "coordinates": []
         };
