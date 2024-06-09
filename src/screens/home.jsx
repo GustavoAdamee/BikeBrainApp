@@ -52,29 +52,26 @@ const HomeScreen = ({navigation}) => {
     return (
         <>
             <Status />
-            {/* FOR DEBUGGING */}
-            <Pressable
-                style={{
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    height: 25,
-                    borderRadius: 4,
-                    backgroundColor: 'black',
-                    flex: 0.3,
+            {/* <ActivityCard 
+                navigation={navigation}
+                activity={{
+                    "startDate": "2021-10-10",
+                    "startTime": "10:00",
+                    "endDate": "2021-10-10",
+                    "endTime": "12:00",
+                    "elapsedTime": "2:00",
+                    "distance": "10 km",
+                    "maxSpeed": "20 km/h",
+                    "avgSpeed": "10 km/h",
+                    "calories": "1000",
+                    "coordinates": [
+                        {
+                            "latitude": 0,
+                            "longitude": 0
+                        }
+                    ]
                 }}
-                // Clear activities on the storage
-                onPress={() => AsyncStorage.setItem("Activities", JSON.stringify([]))}
-            >
-                <Text
-                    style={{
-                        color: 'white',
-                        fontWeight: 'bold',
-                        fontSize: 16,
-                    }}
-                >
-                    View
-                </Text>
-            </Pressable>
+            /> */}
             <FlatList
                 data={activities}
                 renderItem={({ item }) => (

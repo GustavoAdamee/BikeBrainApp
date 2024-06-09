@@ -1,4 +1,4 @@
-import { View, Text } from "react-native";
+import { View, Text, Pressable } from "react-native";
 import MapView, {Polyline, PROVIDER_GOOGLE} from "react-native-maps";
 import { useEffect, useState } from "react";
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -174,6 +174,48 @@ const ActivityScreen = ({navigation, route}) => {
                         </View>
                     </View>
 
+                </View>
+                <View
+                    style={{
+                        flex: 0.15,
+                        flexDirection: "row",
+                        borderTopColor: "black",
+                        borderTopWidth: 0.8,
+                        justifyContent: "center",
+                        alignItems: "center",
+                    }}
+                >
+                    <Pressable
+                        style={{
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            height: 25,
+                            borderRadius: 4,
+                            backgroundColor: 'black',
+                            flex: 0.4,
+                        }}
+                        // delete the activity and navigate back to home
+                        onPress={() => {
+                            AsyncStorage.getItem('Activities').then((activities) => {
+                                const parsedActivities = JSON.parse(activities);
+                                const updatedActivities = parsedActivities.filter(item => item.id !== activity.id);
+                                AsyncStorage.setItem('Activities', JSON.stringify(updatedActivities)).then(() => {
+                                    console.log('Activity deleted');
+                                    navigation.navigate('Home');
+                                });
+                            });
+                        }}
+                    >
+                        <Text
+                            style={{
+                                color: 'white',
+                                fontWeight: 'bold',
+                                fontSize: 16,
+                            }}
+                        >
+                            Delete activity
+                        </Text>
+                    </Pressable>
                 </View>
             </View>
         </>
