@@ -36,6 +36,7 @@ const SyncDataScreen = () => {
           // inserd id to the new activity based on the length of the parsedActivities array
           newActivity.id = parsedActivities.length;
           parsedActivities.push(newActivity);
+          console.log(newActivity)
         }
         await AsyncStorage.setItem("Activities", JSON.stringify(parsedActivities)).then(() => {
             console.log("Activity Stored");
@@ -70,7 +71,7 @@ const SyncDataScreen = () => {
           "calories": activityString[7],
           "coordinates": []
         };
-        for (let i = 8; i < activityString.length; i += 1){
+        for (let i = 8; i < activityString.length-1; i += 1){
           const lat = Number(activityString[i].split(",")[0]);
           const lon = Number(activityString[i].split(",")[1]);
           activityObject.coordinates.push({

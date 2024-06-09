@@ -14,7 +14,7 @@ const ActivityScreen = ({navigation, route}) => {
         "elapsedTime": "",
         "distance": "",
         "maxSpeed": "",
-        "avgSpeed_____": "",
+        "avgSpeed": "",
         "calories": "",
         "coordinates": [
             {
@@ -42,7 +42,8 @@ const ActivityScreen = ({navigation, route}) => {
     const {activityId} = route.params;
     const fetchActivity = async () => {
         // this could be optimized by fetcing directly the activity instead of all activities
-        const activities = await AsyncStorage.getItem('activities');
+        const activities = await AsyncStorage.getItem('Activities');
+        console.log(activities);
         const parsedActivities = JSON.parse(activities);
         const activity = parsedActivities.find(activity => activity.id === activityId);
         setActivity(activity);
@@ -71,6 +72,12 @@ const ActivityScreen = ({navigation, route}) => {
                         flex: 0.7,
                     }}
                     provider={PROVIDER_GOOGLE}
+                    initialRegion={{
+                        latitude: activity.coordinates[0].latitude,
+                        longitude: activity.coordinates[0].longitude,
+                        latitudeDelta: 0.0922,
+                        longitudeDelta: 0.0421,
+                    }}
                 >
                     <Polyline
                         coordinates={routeCoordinates}
