@@ -19,7 +19,7 @@ const UserScreen = ({navigation}) => {
             automaticallyAdjustKeyboardInsets = {true}
             style={{
                 flex: 1,
-                marginTop: 30,
+                marginTop: 20,
             }}
         >
             <UserInfos/>
