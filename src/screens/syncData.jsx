@@ -50,7 +50,8 @@ const SyncDataScreen = () => {
       const timeArray = timeString.split(":");
       const time = (Number(timeArray[2]) * 3600) + (Number(timeArray[1]) * 60) + Number(timeArray[0]);
       const speedMetersPerSecond = Number(distance) / time;
-      const speed = Math.round(speedMetersPerSecond * 3.6 * 100) / 100;
+      const speed = speedMetersPerSecond * 3.6;
+      const speedRounded = speed.toFixed(2);
       return String(speed) + " Km/h";
     }
 
