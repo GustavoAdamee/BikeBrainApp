@@ -22,7 +22,8 @@ function useBLE() {
   const [connectedDevice, setConnectedDevice] = useState(null);
   let actualActivityString = "";
   const [dataArray, setDataArray] = useState([]);
-  const [isSyncingFinished, setIsSyncingFinished] = useState(false);
+  const [isReceivingFinished, setIsReceivingFinished] = useState(false);
+  const [isSendingFinished, setIsSendingFinished] = useState(false);
   
   // Request permissions for Android 31
   const requestAndroid31Permissions = async () => {
@@ -107,21 +108,14 @@ function useBLE() {
         // console.log("Error scanning for devices");
         // console.log(error);
       }
-      if (device && device.name?.includes("mpy-uart")) {                                   //(device && device.name?.includes("{Raspberry Pi device name}"))
-        // setDevice((prevState) => {
-        //   if (isDuplicteDevice(prevState, device) === false) {
-        //     // console.log("Device found");
-        //     return [...prevState, device];
-        //   }
-        //   // console.log("Device already in list");
-        //   return prevState;
-        // });
+      if (device && device.name?.includes("mpy-uart")) {
         setDevice(device);
       }
     });
 
   // Connect to a device (scan)
-  const connectToDevice = async (device) => {
+  // data is not being used, but it is necessary to keep the function callback consistent on the DeviceConnectionModal component
+  const connectToDeviceOnReceiving = async (device, data) => {
     try {
       bleManager.stopDeviceScan();
       const deviceConnection = await bleManager.connectToDevice(
@@ -129,17 +123,28 @@ function useBLE() {
       );
       console.log("conn->",deviceConnection);
       setConnectedDevice(deviceConnection);
-      // console.log("connected->",setConnectedDevice)
-      // await deviceConnection.discoverAllServicesAndCharacteristics();
       await bleManager.discoverAllServicesAndCharacteristicsForDevice(device.id);
-      const services = await device.services()
-      console.log(services)
-      startStreamingData(deviceConnection); //Data cant be streamed for now (missing UUID and Characteristic)
-    
+      startStreamingData(deviceConnection);
     } catch (e) {
       console.log("FAILED TO CONNECT", e);
     }
   };
+
+  // Connect to a device (send)
+  const connectToDeviceOnSending = async (device, data) => {
+    try {
+      bleManager.stopDeviceScan();
+      const deviceConnection = await bleManager.connectToDevice(
+        device.id
+      );
+      console.log("conn->",deviceConnection);
+      setConnectedDevice(deviceConnection);
+      await bleManager.discoverAllServicesAndCharacteristicsForDevice(device.id);
+      sendDataToDevice(deviceConnection, data);
+    } catch (e) {
+      console.log("FAILED TO CONNECT", e);
+    }
+  }
 
   // Disconnect from a device
   const disconnectFromDevice = () => {
@@ -147,7 +152,8 @@ function useBLE() {
     if (connectedDevice) {
       bleManager.cancelDeviceConnection(connectedDevice.id);
       setConnectedDevice(null);
-      setIsSyncingFinished(false);
+      setIsReceivingFinished(false);
+      setIsSendingFinished(false);
     }
   };
 
@@ -215,7 +221,7 @@ function useBLE() {
       // setDataArray(auxArray);
       console.log(dataArray);
       clearactualActivityString();
-      setIsSyncingFinished(true);
+      setIsReceivingFinished(true);
     }
 
     // let innerHeartRate = -1;
@@ -254,12 +260,7 @@ function useBLE() {
 
   const startStreamingData = async (device) => {
     if (device) {
-      console.log("Device Connected")
-      device.writeCharacteristicWithoutResponseForService(
-        DEVICE_SERVICE_UUID,
-        DEVICE_SERVICE_CHARACTERISTIC_RX,
-        base64.encode("testando")
-      );
+      console.log("Device Connected");
       device.monitorCharacteristicForService(
         DEVICE_SERVICE_UUID,
         DEVICE_SERVICE_CHARACTERISTIC,
@@ -270,17 +271,34 @@ function useBLE() {
     }
   };
 
+  const sendDataToDevice = async (device, data) => {
+    if (device) {
+      console.log("Device Connected");
+      await device.writeCharacteristicWithoutResponseForService(
+        DEVICE_SERVICE_UUID,
+        DEVICE_SERVICE_CHARACTERISTIC_RX,
+        base64.encode(data)
+      );
+      setIsSendingFinished(true);
+    } else {
+      console.log("No Device Connected");
+    }
+  }
+
 
   return {
     scanForPeripherals,
     requestPermissions,
-    connectToDevice,
+    connectToDeviceOnReceiving,
+    connectToDeviceOnSending,
     device,
     connectedDevice,
     disconnectFromDevice,
     dataArray,
     clearDataArray,
-    isSyncingFinished,
+    isReceivingFinished,
+    isSendingFinished,
+    sendDataToDevice
   };
 
 }

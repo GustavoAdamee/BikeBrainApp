@@ -9,10 +9,10 @@ import {
 } from "react-native";
 
 const DeviceModal = (props) => {
-  const { device, visible, connectToPeripheral, closeModal } = props;
+  const { device, visible, connectToPeripheral, closeModal, dataOnSending } = props;
 
   const connectAndCloseModal = useCallback(() => {
-    connectToPeripheral(device);
+    connectToPeripheral(device, dataOnSending);
     closeModal();
   }, [closeModal, connectToPeripheral, device]);
 

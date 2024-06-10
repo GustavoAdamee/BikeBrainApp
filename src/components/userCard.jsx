@@ -1,5 +1,7 @@
 import { View, Text } from "react-native";
 
+// TODO: Implement AsyncStorage here for the total numbers of the user
+
 const UserCard = ({ userNumbers }) => {
     return(
         <View

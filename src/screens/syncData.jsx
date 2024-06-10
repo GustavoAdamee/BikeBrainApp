@@ -13,13 +13,16 @@ const SyncDataScreen = () => {
     const {
       scanForPeripherals,
       requestPermissions,
-      connectToDevice,
+      connectToDeviceOnReceiving,
+      connectToDeviceOnSending,
       device,
       connectedDevice,
       disconnectFromDevice,
       dataArray,
       clearDataArray,
-      isSyncingFinished,
+      isReceivingFinished,
+      isSendingFinished,
+      sendDataToDevice
     } = useBLE();
 
     const storeNewActivity = async (newActivitiesArray) => {
@@ -86,7 +89,7 @@ const SyncDataScreen = () => {
       return activitiesArray;
     }
 
-    if (isSyncingFinished === true) {
+    if (isReceivingFinished === true) {
         const processedActivitiesArray = prepareDataArray(dataArray);
         storeNewActivity(processedActivitiesArray);
         clearDataArray();
@@ -123,9 +126,6 @@ const SyncDataScreen = () => {
             <View style={styles.heartRateTitleWrapper}>
                 {connectedDevice ? (
                 <>
-                    {/* <Text>{dataArray}</Text>
-                    <Text style={styles.heartRateTitleText}>Your Heart Rate Is:</Text>
-                    <Text style={styles.heartRateText}>{heartRate} bpm</Text> */}
                     <ActivityIndicator size="large" color="black" />
                     <Text style={styles.heartRateTitleText}>Syncing...</Text>
                 </>
@@ -147,7 +147,7 @@ const SyncDataScreen = () => {
             <DeviceModal
                 closeModal={hideModal}
                 visible={isModalVisible}
-                connectToPeripheral={connectToDevice}
+                connectToPeripheral={connectToDeviceOnReceiving}
                 device={device}
             />
         </SafeAreaView>
