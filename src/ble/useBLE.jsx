@@ -19,8 +19,6 @@ function useBLE() {
   const bleManager = useMemo(() => new BleManager(), []);
   const [device, setDevice] = useState();
   const [connectedDevice, setConnectedDevice] = useState(null);
-  // const [heartRate, setHeartRate] = useState(0);
-  // const [actualActivityString, setActualActivityString] = useState("");
   let actualActivityString = "";
   const [dataArray, setDataArray] = useState([]);
   const [isSyncingFinished, setIsSyncingFinished] = useState(false);
@@ -152,7 +150,6 @@ function useBLE() {
     }
   };
 
-  // TODO: implement the data handle for the raspberry pi pico
   // Update the heart rate (The way the data is recieved varies on the device)
   const onDeviceUpdate = (
     error,
@@ -257,6 +254,11 @@ function useBLE() {
   const startStreamingData = async (device) => {
     if (device) {
       console.log("Device Connected")
+      device.writeCharacteristicWithoutResponseForService(
+        DEVICE_SERVICE_UUID,
+        DEVICE_SERVICE_CHARACTERISTIC,
+        base64.encode("testando")
+      );
       device.monitorCharacteristicForService(
         DEVICE_SERVICE_UUID,
         DEVICE_SERVICE_CHARACTERISTIC,
