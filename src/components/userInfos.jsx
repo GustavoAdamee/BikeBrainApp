@@ -70,8 +70,9 @@ const UserInfos = () => {
     const preProcessUserData = () => {
         const formattedPhorneNumber = "+55"+phoneNumber;
         const formattedWeight = weight;
-        const formattedHash = "#EOPBpWiEtOx"
-        return formattedPhorneNumber + ',' + formattedWeight + ',' + formattedHash;
+        // const formattedHash = "#EOPBpWiEtOx"
+        // return formattedPhorneNumber + ',' + formattedWeight + ',' + formattedHash;
+        return formattedPhorneNumber + ',' + formattedWeight;
     }
 
 
