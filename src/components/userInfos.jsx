@@ -43,15 +43,6 @@ const UserInfos = () => {
     const hideModal = () => {
         setIsModalVisible(false);
     };
-    if (isSendingFinished === true) {
-        storeNewUserData();
-        console.log("Disconnecting from Device");
-        disconnectFromDevice();
-    }
-    else {
-      console.log("Sending in Progress...");
-    }
-
     const storeNewUserData = async () => {
         const userData = await AsyncStorage.getItem("User");
         const newUserData = {
@@ -65,6 +56,15 @@ const UserInfos = () => {
         };
         await AsyncStorage.setItem("User", JSON.stringify(newUserData));
     }
+    if (isSendingFinished === true) {
+        storeNewUserData();
+        console.log("Disconnecting from Device");
+        disconnectFromDevice();
+    }
+    else {
+      console.log("Sending in Progress...");
+    }
+
 
 
     const preProcessUserData = () => {
