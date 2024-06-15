@@ -55,7 +55,7 @@ const SyncDataScreen = () => {
       const speedMetersPerSecond = Number(distance) / time;
       const speed = speedMetersPerSecond * 3.6;
       const speedRounded = speed.toFixed(2);
-      return String(speed) + " Km/h";
+      return String(speedRounded) + " Km/h";
     }
 
     const prepareDataArray = (data) => {
