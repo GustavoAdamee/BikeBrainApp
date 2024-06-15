@@ -3,8 +3,21 @@ import MapView, {Polyline, PROVIDER_GOOGLE} from "react-native-maps";
 import { useEffect, useState } from "react";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
+const CalcZoom = (coordinates) => {
+    const latitudes = coordinates.latitude;
+    const longitudes = coordinates.longitude;
+    const minLat = Math.min(...latitudes);
+    const maxLat = Math.max(...latitudes);
+    const minLon = Math.min(...longitudes);
+    const maxLon = Math.max(...longitudes);
+    const deltaLat = maxLat - minLat;
+    const deltaLon = maxLon - minLon;
+    return [deltaLat, deltaLon];
+}
 
 const ActivityScreen = ({navigation, route}) => {
+    deltaLat = CalcZoom(route.params.activity.coordinates)[0] 
+    deltaLon = CalcZoom(route.params.activity.coordinates)[1]
     
     // const [activity, setActivity] = useState({
     //     "startDate": "",
@@ -75,8 +88,8 @@ const ActivityScreen = ({navigation, route}) => {
                     initialRegion={{
                         latitude: activity.coordinates[0].latitude,
                         longitude: activity.coordinates[0].longitude,
-                        latitudeDelta: 0.0922,
-                        longitudeDelta: 0.0421,
+                        latitudeDelta: deltaLat,
+                        longitudeDelta: deltaLon,
                     }}
                 >
                     <Polyline
