@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useState, useEffect } from "react";
 import { View, Text } from "react-native";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import useBLE from "../ble/useBLE";
