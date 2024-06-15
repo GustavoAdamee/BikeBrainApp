@@ -1,9 +1,10 @@
-import { Button, Text, View, TouchableHighlight } from "react-native";
+import { Button, Text, View, TouchableHighlight, TouchableOpacity, SafeAreaView } from "react-native";
 import React from "react";
 import SmsRetriver from 'react-native-sms-retriever';
 import { useState, useEffect } from "react";
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import Geocoder from 'react-native-geocoding';
+import MapModal from "./mapModal";
 
 const Status = (props) => {
 
@@ -14,6 +15,19 @@ const Status = (props) => {
     const [lastUpdate, setLastUpdate] = useState("...");
     const [currentTime, setCurrentTime] = useState(Date.now());
     const [backgroundColor, setBackgroundColor] = useState("black");
+    const [actualLat, setActualat] = useState(0)
+    const [actualLon, setActualLon] = useState(0)
+
+    const [isModalVisible, setIsModalVisible] = useState(false);
+
+    const openModal = () => {
+        console.log("openModal")
+        setIsModalVisible(true)
+    }
+
+    const closeModal = () => {
+        setIsModalVisible(false)
+    }
 
     const _onSmsListenerPressed = async () => {
         try {
@@ -26,8 +40,6 @@ const Status = (props) => {
                         return;
                     }
                     else{
-                        // TODO: Adapt the message to the format of the SMS received from the bike
-    
                         // get the message from the event, extraxt the msg until the line break
                         const message = event.message.split("\n")[0];
                         console.log("Message recieved ->",message);
@@ -36,6 +48,8 @@ const Status = (props) => {
                         const coordinates = msgArray[1].replace(")","");
                         const lat = Number(coordinates.split(",")[0]);
                         const long = Number(coordinates.split(",")[1]);
+                        setActualat(lat)
+                        setActualLon(long)
                         
                         // get the location from the message
                         Geocoder.from(lat, long).then(json => {
@@ -106,62 +120,81 @@ const Status = (props) => {
     _onSmsListenerPressed();
 
     return (
-    <View 
-        style={{
-            backgroundColor: backgroundColor,
-            height: 40,
-            flexDirection: "row",
-            justifyContent: "space-between",
-            alignItems: "center",
-            marginHorizontal: 20,
-            borderRadius: 15,
-            marginTop: 20,
-            marginBottom: 20,
-        }}
-    >
-        <View>
-            {backgroundColor === "red" && (
-                <Ionicons
-                    name="alert"
-                    style={{marginLeft: 10}}
-                    size={18}
-                    color={"white"}
-                />
-            )}
-            {backgroundColor === "blue" && (
-                <Ionicons
-                    name="bicycle"
-                    style={{marginLeft: 10}}
-                    size={18}
-                    color={"white"}
-                />
-            )}
-            {backgroundColor === "black" && (
-                <Ionicons
-                    name="bicycle"
-                    style={{marginLeft: 10}}
-                    size={18}
-                    color={"white"}
-                />
-            )}
-        </View>
-        <Text 
-            style={{
-                color: "white",
-                fontSize: 12,
-            }}
-        >
-            {actualLocation} -- ({getTimeAgo(lastUpdate)})
-        </Text>
-        <View>
-            <Ionicons
-                name="location"
-                style={{marginRight: 10}}
-                size={15}
-                color={"white"}
+        <SafeAreaView>     
+            <TouchableOpacity
+                onPress={()=>{
+                    console.log("open")
+                    openModal()
+                }}
+                // style={styles.ctaButton}
+                style={{
+                    backgroundColor: backgroundColor,
+                    height: 40,
+                    flexDirection: "row",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                    marginHorizontal: 20,
+                    borderRadius: 15,
+                    marginTop: 20,
+                    marginBottom: 20,
+                }}
+            >
+                {/* <Text style={styles.ctaButtonText}>
+                {connectedDevice ? "Disconnect" : "Search bike module"}
+                </Text> */}
+                <View>
+                    {backgroundColor === "red" && (
+                        <Ionicons
+                            name="alert"
+                            style={{marginLeft: 10}}
+                            size={18}
+                            color={"white"}
+                        />
+                    )}
+                    {backgroundColor === "blue" && (
+                        <Ionicons
+                            name="bicycle"
+                            style={{marginLeft: 10}}
+                            size={18}
+                            color={"white"}
+                        />
+                    )}
+                    {backgroundColor === "black" && (
+                        <Ionicons
+                            name="bicycle"
+                            style={{marginLeft: 10}}
+                            size={18}
+                            color={"white"}
+                        />
+                    )}
+                </View>
+                <Text 
+                    style={{
+                        color: "white",
+                        fontSize: 12,
+                    }}
+                >
+                    {actualLocation} -- ({getTimeAgo(lastUpdate)})
+                </Text>
+                <View>
+                    <Ionicons
+                        name="location"
+                        style={{marginRight: 10}}
+                        size={15}
+                        color={"white"}
+                    />
+                </View>
+            </TouchableOpacity>
+            <MapModal 
+                show={isModalVisible} 
+                lat={actualLat} 
+                long={actualLon}
+                closeModal={closeModal}
             />
-        </View>
-    </View>
+            {/* <View 
+            >
+            </View> */}
+        </SafeAreaView>
     );
 
 }
