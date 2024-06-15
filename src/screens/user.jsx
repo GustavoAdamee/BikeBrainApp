@@ -3,8 +3,6 @@ import React, { useState, useEffect } from "react";
 import UserInfos from "../components/userInfos";
 import UserCard from "../components/userCard";
 
-import AsyncStorage from '@react-native-async-storage/async-storage';
-
 const userNumbersMock = {
     totalActivities: "24",
     totalHours: "10:32:41",

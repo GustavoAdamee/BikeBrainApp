@@ -13,6 +13,7 @@ const Status = (props) => {
     const [actualLocation, setActualLocation] = useState("No updates yet");
     const [lastUpdate, setLastUpdate] = useState("...");
     const [currentTime, setCurrentTime] = useState(Date.now());
+    const [backgroundColor, setBackgroundColor] = useState("black");
 
     const _onSmsListenerPressed = async () => {
         try {
@@ -30,8 +31,11 @@ const Status = (props) => {
                         // get the message from the event, extraxt the msg until the line break
                         const message = event.message.split("\n")[0];
                         console.log("Message recieved ->",message);
-                        const lat = Number(message.split(",")[0]);
-                        const long = Number(message.split(",")[1]);
+                        const msgArray = message.split("(");
+                        const state = msgArray[0].replace(" ","");
+                        const coordinates = msgArray[1].replace(")","");
+                        const lat = Number(coordinates.split(",")[0]);
+                        const long = Number(coordinates.split(",")[1]);
                         
                         // get the location from the message
                         Geocoder.from(lat, long).then(json => {
@@ -44,6 +48,24 @@ const Status = (props) => {
                             setLastUpdate(Date.now());
                             setActualLocation(returnAdress);
                         })
+                        if(state === "Execise started"){
+                            setBackgroundColor("blue");
+                        }
+                        else if(state === "Exercise stoped"){
+                            setBackgroundColor("black");
+                        }
+                        else if(state === "Alarm on"){
+                            setBackgroundColor("red");
+                        }
+                        else if(state === "Alarm off"){
+                            setBackgroundColor("black");
+                        }
+                        else if (state === "Alarm triggered"){
+                            setBackgroundColor("red");
+                        }
+                        else if (state === "Current location:"){
+                            setBackgroundColor("red");
+                        }
                         console.log("Adress ->",actualLocation);
                         // setActualLocation(adress._z);
                         SmsRetriver.removeSmsListener();
@@ -86,7 +108,7 @@ const Status = (props) => {
     return (
     <View 
         style={{
-            backgroundColor: "black",
+            backgroundColor: backgroundColor,
             height: 40,
             flexDirection: "row",
             justifyContent: "space-between",
@@ -98,12 +120,30 @@ const Status = (props) => {
         }}
     >
         <View>
-            <Ionicons 
-                name="bicycle"
-                style={{marginLeft: 10}}
-                size={18} 
-                color={"white"}
-            />
+            {backgroundColor === "red" && (
+                <Ionicons
+                    name="alert"
+                    style={{marginLeft: 10}}
+                    size={18}
+                    color={"white"}
+                />
+            )}
+            {backgroundColor === "blue" && (
+                <Ionicons
+                    name="bicycle"
+                    style={{marginLeft: 10}}
+                    size={18}
+                    color={"white"}
+                />
+            )}
+            {backgroundColor === "black" && (
+                <Ionicons
+                    name="bicycle"
+                    style={{marginLeft: 10}}
+                    size={18}
+                    color={"white"}
+                />
+            )}
         </View>
         <Text 
             style={{

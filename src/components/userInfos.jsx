@@ -5,8 +5,6 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import useBLE from "../ble/useBLE";
 import DeviceModal from "../components/DeviceConnectionModal";
 
-// TODO: ADD HASH ON THE DATA TO BE SENT FOR THE SMS
-
 const UserInfos = () => {
     const {
         scanForPeripherals,
@@ -93,10 +91,10 @@ const UserInfos = () => {
                         name: "",
                         weight: "",
                         phoneNumber: "",
-                        totalActivities: 0,
-                        totalCalories: 0,
-                        totalDistance: 0,
-                        totalTime: 0,
+                        totalActivities: "0",
+                        totalCalories: "0",
+                        totalDistance: "0",
+                        totalTime: "00:00:00",
                     };
                     await AsyncStorage.setItem("User", JSON.stringify(newUserData));
                 }

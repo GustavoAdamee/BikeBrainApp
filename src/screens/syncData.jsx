@@ -25,6 +25,14 @@ const SyncDataScreen = () => {
       sendDataToDevice
     } = useBLE();
 
+    const timeStringToSeconds = (timeString) => {
+      if (timeString === "00:00:00") {
+        return 0;
+      }
+      const timeArray = timeString.split(":");
+      return (Number(timeArray[2]) * 3600) + (Number(timeArray[1]) * 60) + Number(timeArray[0]);
+    }
+
     const storeNewActivity = async (newActivitiesArray) => {
       console.log("Storing New Activities");
       try{
@@ -48,6 +56,52 @@ const SyncDataScreen = () => {
         console.log(error);
       }
     };
+
+    const storeUserTotals = async (newActivitiesArray) => {
+      console.log("Storing User Totals");
+      try{
+        const userData = await AsyncStorage.getItem("User");
+        if (!userData) {
+            await AsyncStorage.setItem("User", JSON.stringify({
+              name: "User",
+              weight: "0",
+              phoneNumber: "0",
+              totalActivities: "0",
+              totalCalories: "0",
+              totalDistance: "0",
+              totalTime: "00:00:00"
+            }));
+            console.log("User Initialized");
+        }
+        const parsedUserData = JSON.parse(userData);
+        let totalActivities = Number(parsedUserData.totalActivities);
+        let totalCalories = Number(parsedUserData.totalCalories);
+        let totalDistance = Number(parsedUserData.totalDistance);
+        let totalTimeInSeconds = timeStringToSeconds(parsedUserData.totalTime);
+        // push every new activity to the parsedActivities array
+        for (const newActivity of newActivitiesArray) {
+          totalActivities += 1;
+          totalCalories += Number(newActivity.calories);
+          totalDistance += Number(newActivity.distance.split(" ")[0]);
+          totalTimeInSeconds += timeStringToSeconds(newActivity.elapsedTime);
+        }
+        const totalTime = (new Date(totalTimeInSeconds * 1000)).toUTCString().match(/(\d\d:\d\d:\d\d)/)[0];
+        const newUserData = {
+          name: parsedUserData.name,
+          weight: parsedUserData.weight,
+          phoneNumber: parsedUserData.phoneNumber,
+          totalActivities: String(totalActivities),
+          totalCalories: String(totalCalories),
+          totalDistance: String(totalDistance),
+          totalTime: String(totalTime)
+        };
+        await AsyncStorage.setItem("User", JSON.stringify(newUserData)).then(() => {
+            console.log("User Totals Stored");
+        });
+      } catch (error) {
+        console.log(error);
+      }
+    }
 
     const calculateAvgSpeed = (distance, timeString) => {
       const timeArray = timeString.split(":");
@@ -92,6 +146,7 @@ const SyncDataScreen = () => {
     if (isReceivingFinished === true) {
         const processedActivitiesArray = prepareDataArray(dataArray);
         storeNewActivity(processedActivitiesArray);
+        storeUserTotals(processedActivitiesArray);
         clearDataArray();
         console.log("Disconnecting from Device");
         disconnectFromDevice();
