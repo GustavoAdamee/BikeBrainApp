@@ -41,13 +41,13 @@ const Status = (props) => {
                     }
                     else{
                         // get the message from the event, extraxt the msg until the line break
-                        const message = event.message.split("\n")[0];
+                        let message = event.message.split("\n")[0];
                         console.log("Message recieved ->",message);
-                        const msgArray = message.split("(");
-                        const state = msgArray[0].replace(" ","");
-                        const coordinates = msgArray[1].replace(")","");
-                        const lat = Number(coordinates.split(",")[0]);
-                        const long = Number(coordinates.split(",")[1]);
+                        let msgArray = message.split("(");
+                        let state = msgArray[0].replace(" ","")
+                        let coordinates = msgArray[1].replace(")","");
+                        let lat = Number(coordinates.split(",")[0]);
+                        let long = Number(coordinates.split(",")[1]);
                         setActualat(lat)
                         setActualLon(long)
                         
@@ -62,22 +62,22 @@ const Status = (props) => {
                             setLastUpdate(Date.now());
                             setActualLocation(returnAdress);
                         })
-                        if(state === "Execise started"){
+                        if(String(state.trim()) === String("Exercisestarted")){
                             setBackgroundColor("blue");
                         }
-                        else if(state === "Exercise stoped"){
+                        else if(String(state.trim()) === String("Exercisestopped")){
                             setBackgroundColor("black");
                         }
-                        else if(state === "Alarm on"){
-                            setBackgroundColor("red");
-                        }
-                        else if(state === "Alarm off"){
+                        else if(String(state.trim()) === String("Alarmon")){
                             setBackgroundColor("black");
                         }
-                        else if (state === "Alarm triggered"){
+                        else if(String(state.trim()) === String("Alarmoff")){
+                            setBackgroundColor("black");
+                        }
+                        else if (String(state.trim()) === String("Alarmtriggered")){
                             setBackgroundColor("red");
                         }
-                        else if (state === "Current location:"){
+                        else if (String(state.trim()) === String("Currentlocation:")){
                             setBackgroundColor("red");
                         }
                         console.log("Adress ->",actualLocation);
