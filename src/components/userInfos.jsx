@@ -194,7 +194,7 @@ const UserInfos = () => {
                     }}
                     onChangeText={setPhoneNumber}
                     value={phoneNumber}
-                    placeholder="useless placeholder"
+                    placeholder="..."
                     keyboardType="phone-pad"
                 >
                 </TextInput>
