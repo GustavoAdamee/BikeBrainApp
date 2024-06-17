@@ -33,7 +33,7 @@ const DeviceModal = (props) => {
             onPress={connectAndCloseModal}
             style={modalStyle.ctaButton}
           >
-            <Text style={modalStyle.ctaButtonText}>{device.name}</Text>
+            <Text style={modalStyle.ctaButtonText}>Bike Module 1</Text>
           </TouchableOpacity>
         ) : (<></>)}
       </SafeAreaView>
