@@ -1,10 +1,10 @@
 {
   "expo": {
-    "name": "expo-ble-sample",
-    "slug": "expo-ble-sample",
+    "name": "BikeBrainApp",
+    "slug": "BikeBrainApp",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
+    "icon": "./assets/logo.png",
     "userInterfaceStyle": "light",
     "plugins": [
       [
@@ -20,7 +20,7 @@
       ]
     ],
     "splash": {
-      "image": "./assets/splash.png",
+      "image": "./assets/logo.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
