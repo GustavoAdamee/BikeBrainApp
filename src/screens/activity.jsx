@@ -3,21 +3,25 @@ import MapView, {Polyline, PROVIDER_GOOGLE} from "react-native-maps";
 import { useEffect, useState } from "react";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const CalcZoom = (coordinates) => {
-    const latitudes = coordinates.latitude;
-    const longitudes = coordinates.longitude;
-    const minLat = Math.min(...latitudes);
-    const maxLat = Math.max(...latitudes);
-    const minLon = Math.min(...longitudes);
-    const maxLon = Math.max(...longitudes);
-    const deltaLat = maxLat - minLat;
-    const deltaLon = maxLon - minLon;
-    return [deltaLat, deltaLon];
-}
+// const CalcZoom = (coordinates) => {
+//     console.log(coordinates)
+    // [{latitude:000, longitude:000},{},{}]
+    // const latitudes = coordinates.map((coordinate) => coordinate.latitude);
+    // console.log(latitudes)
+    // // const latitudes = coordinates.latitude;
+    // const longitudes = coordinates.longitude;
+    // const minLat = Math.min(...latitudes);
+    // const maxLat = Math.max(...latitudes);
+    // const minLon = Math.min(...longitudes);
+    // const maxLon = Math.max(...longitudes);
+    // const deltaLat = maxLat - minLat;
+    // const deltaLon = maxLon - minLon;
+    // return [deltaLat, deltaLon];
+// }
 
 const ActivityScreen = ({navigation, route}) => {
-    deltaLat = CalcZoom(route.params.activity.coordinates)[0] 
-    deltaLon = CalcZoom(route.params.activity.coordinates)[1]
+    // deltaLat = CalcZoom(route.params.coordinates)[0] 
+    // deltaLon = CalcZoom(route.params.coordinates)[1]
     
     // const [activity, setActivity] = useState({
     //     "startDate": "",
@@ -88,8 +92,10 @@ const ActivityScreen = ({navigation, route}) => {
                     initialRegion={{
                         latitude: activity.coordinates[0].latitude,
                         longitude: activity.coordinates[0].longitude,
-                        latitudeDelta: deltaLat,
-                        longitudeDelta: deltaLon,
+                        latitudeDelta: 0.0922,
+                        longitudeDelta: 0.0421,
+                        // latitudeDelta: deltaLat,
+                        // longitudeDelta: deltaLon,
                     }}
                 >
                     <Polyline
@@ -106,7 +112,7 @@ const ActivityScreen = ({navigation, route}) => {
                         borderBottomWidth: 0.8,
                         paddingVertical: 5,
                         flexDirection: "row",
-                        marginTop: 5
+                        marginTop: 5,
                     }}
                 >
                     <Text
@@ -128,7 +134,7 @@ const ActivityScreen = ({navigation, route}) => {
                 <View
                     style={{
                         flex: 0.4,
-                        marginTop: 30,
+                        marginTop: 20,
                     }}
                 >
                     <View
@@ -186,7 +192,21 @@ const ActivityScreen = ({navigation, route}) => {
                             <Text style={{fontSize:16, fontWeight: "bold"}}>{activity.distance}</Text>
                         </View>
                     </View>
+                </View>
+                <View
+                    style={{
+                        flex: 0.1,
+                        justifyContent: "center",
+                        alignItems: "center",
+                        borderBottomColor: "black",
+                        borderBottomWidth: 0.8,
+                        marginTop: -20,
+                        paddingBottom: 10,
+                    }}
+                >   
 
+                    <Text>Max Speed:</Text>
+                    <Text style={{fontSize:16, fontWeight: "bold"}}>{activity.maxSpeed}</Text>
                 </View>
                 <View
                     style={{
