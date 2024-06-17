@@ -35,7 +35,7 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
+        "foregroundImage": "./assets/logo.png",
         "backgroundColor": "#FFFFFF"
       },
       "permissions": [
@@ -55,7 +55,7 @@
     },
     "extra": {
       "eas": {
-        "projectId": "b7235532-ab40-4258-965b-a9005577b823"
+        "projectId": "30453eaf-a1c9-450f-bd69-d1c0b5433ca7"
       }
     }
   }
