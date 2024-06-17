@@ -29,8 +29,8 @@ const SyncDataScreen = () => {
       if (timeString === "00:00:00") {
         return 0;
       }
-      const timeArray = timeString.split(":");
-      return (Number(timeArray[2]) * 3600) + (Number(timeArray[1]) * 60) + Number(timeArray[0]);
+      const timeStringSplit = timeString.split(":");
+      return (Number(timeStringSplit[2])) + (Number(timeStringSplit[1]) * 60) + Number(timeStringSplit[0] * 3600);
     }
 
     const storeNewActivity = async (newActivitiesArray) => {
@@ -72,6 +72,19 @@ const SyncDataScreen = () => {
               totalTime: "00:00:00"
             }));
             console.log("User Initialized");
+        }
+        else if (!userData.totalActivities) {
+          console.log("User Data Corrupted")
+          const parsedUserData = JSON.parse(userData);
+          await AsyncStorage.setItem("User", JSON.stringify({
+            name: parsedUserData.name,
+            weight: parsedUserData.weight,
+            phoneNumber: parsedUserData.phoneNumber,
+            totalActivities: "0",
+            totalCalories: "0",
+            totalDistance: "0",
+            totalTime: "00:00:00"
+          }));
         }
         const parsedUserData = JSON.parse(userData);
         let totalActivities = Number(parsedUserData.totalActivities);
