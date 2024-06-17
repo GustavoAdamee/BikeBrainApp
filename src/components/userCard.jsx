@@ -5,89 +5,10 @@ import useBLE from "../ble/useBLE";
 
 // TODO: Implement AsyncStorage here for the total numbers of the user
 
-const UserCard = () => {
-
-    const {
-        scanForPeripherals,
-        requestPermissions,
-        connectToDeviceOnReceiving,
-        connectToDeviceOnSending,
-        device,
-        connectedDevice,
-        disconnectFromDevice,
-        dataArray,
-        clearDataArray,
-        isReceivingFinished,
-        isSendingFinished,
-        sendDataToDevice
-    } = useBLE();
-    
-    const [totalActivities, setTotalActivities] = useState("0");
-    const [totalTime, setTotalTime] = useState("00:00:00");
-    const [totalCalories, setTotalCalories] = useState("0");
-    const [totalDistance, setTotalDistance] = useState("0");
-
-    const fetchUserData = async () => {
-        try {
-            const user = await AsyncStorage.getItem("User");
-            if (!user) {
-                await AsyncStorage.setItem("User", JSON.stringify({
-                    name: "User",
-                    weight: "0",
-                    phoneNumber: "00000000000",
-                    totalActivities: "0",
-                    totalCalories: "0",
-                    totalDistance: "0",
-                    totalTime: "00:00:00",
-                }));
-                console.log("User Initialized");
-            }
-            const parsedUser = JSON.parse(user);
-            setTotalActivities(parsedUser.totalActivities);
-            setTotalTime(parsedUser.totalTime);
-            setTotalCalories(parsedUser.totalCalories);
-            setTotalDistance(parsedUser.totalDistance);
-        } catch (e) {
-            console.log("Failed to fetch user data", e);
-        }
-    }
-
-    if (isReceivingFinished === true) {
-        fetchUserData();
-        console.log("Disconnecting from Device");
-    }
-    else {
-      console.log("Sending in Progress...");
-    }
+const UserCard = ({userTotalNumber}) => {
 
     useEffect(() =>{
         console.log("UserCard Mount");
-        // load user data from AsyncStorage
-        const loadUserData = async () => {
-            try {
-                const user = await AsyncStorage.getItem("User");
-                if (!user) {
-                    await AsyncStorage.setItem("User", JSON.stringify({
-                        name: "User",
-                        weight: "0",
-                        phoneNumber: "00000000000",
-                        totalActivities: "0",
-                        totalCalories: "0",
-                        totalDistance: "0",
-                        totalTime: "00:00:00",
-                    }));
-                    console.log("User Initialized");
-                }
-                const parsedUser = JSON.parse(user);
-                setTotalActivities(parsedUser.totalActivities);
-                setTotalTime(parsedUser.totalTime);
-                setTotalCalories(parsedUser.totalCalories);
-                setTotalDistance(parsedUser.totalDistance);
-            } catch (e) {
-                console.log("Failed to fetch user data", e);
-            }
-        }
-        loadUserData();
     }), [];
 
     return(
@@ -136,7 +57,8 @@ const UserCard = () => {
                             }}
                         >
 
-                            <Text style={{fontSize:20, fontWeight: "bold"}}>{totalActivities}</Text>
+                            <Text style={{fontSize:20, fontWeight: "bold"}}>{userTotalNumber.totalActivities}</Text>
+                            {/* <Text style={{fontSize:20, fontWeight: "bold"}}>2</Text> */}
                         </View>
                     </View>
                     {/* TOP RIGHT */}
@@ -155,7 +77,8 @@ const UserCard = () => {
                                 paddingBottom: 10,
                             }}
                         >
-                            <Text style={{fontSize:20, fontWeight: "bold"}}>{totalTime}</Text>
+                            <Text style={{fontSize:20, fontWeight: "bold"}}>{userTotalNumber.totalTime}</Text>
+                            {/* <Text style={{fontSize:20, fontWeight: "bold"}}>00:02:29</Text> */}
                         </View>
                     </View>
                 </View>
@@ -183,7 +106,8 @@ const UserCard = () => {
                                 paddingBottom: 10,
                             }}
                         >
-                            <Text style={{fontSize:20, fontWeight: "bold"}}>{totalCalories} cal</Text>
+                            <Text style={{fontSize:20, fontWeight: "bold"}}>{userTotalNumber.totalCalories} cal</Text>
+                            {/* <Text style={{fontSize:20, fontWeight: "bold"}}>14.7</Text> */}
                         </View>
                     </View>
                     {/* BOTTON RIGHT */}
@@ -202,7 +126,8 @@ const UserCard = () => {
                                 paddingBottom: 10,
                             }}
                         >
-                            <Text style={{fontSize:20, fontWeight: "bold"}}>{totalDistance} km</Text>
+                            <Text style={{fontSize:20, fontWeight: "bold"}}>{userTotalNumber.totalDistance} km</Text>
+                            {/* <Text style={{fontSize:20, fontWeight: "bold"}}>0.433</Text> */}
                         </View>
                     </View>
                 </View>
