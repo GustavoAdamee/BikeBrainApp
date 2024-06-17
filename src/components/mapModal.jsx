@@ -30,7 +30,10 @@ const MapModal = ({ show, lat, long, closeModal }) => {
         >
             <MapView
                 style={{
-                    flex: 0.7,
+                    flex: 1,
+                    marginHorizontal: 10,
+                    marginBottom: 30,
+                    marginTop: 10
                 }}
                 provider={PROVIDER_GOOGLE}
                 initialRegion={{
